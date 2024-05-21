@@ -9,8 +9,8 @@ using StreakyAPi.Model.Token;
 
 namespace StreakyAPi.Controllers
 {
-    [Route("/[controller]")]
     [ApiController]
+    [Route("[controller]")]
     public class AuthController : ControllerBase
     {
 
