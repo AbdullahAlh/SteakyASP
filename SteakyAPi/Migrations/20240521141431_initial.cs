@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace StreakyAPi.Migrations
 {
     /// <inheritdoc />
-    public partial class migrationTest : Migration
+    public partial class initial : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -15,9 +15,9 @@ namespace StreakyAPi.Migrations
                 name: "Categories",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    Id = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    Name = table.Column<string>(type: "TEXT", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -28,9 +28,9 @@ namespace StreakyAPi.Migrations
                 name: "Genders",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    GenderName = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    Id = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    GenderName = table.Column<string>(type: "TEXT", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -41,26 +41,19 @@ namespace StreakyAPi.Migrations
                 name: "Users",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Password = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    GenderId = table.Column<int>(type: "int", nullable: false),
-                    ImagePath = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Points = table.Column<double>(type: "float", nullable: false),
-                    CategoryId = table.Column<int>(type: "int", nullable: false),
-                    IsAdmin = table.Column<bool>(type: "bit", nullable: false)
+                    Id = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    Email = table.Column<string>(type: "TEXT", nullable: false),
+                    Password = table.Column<string>(type: "TEXT", nullable: false),
+                    Name = table.Column<string>(type: "TEXT", nullable: false),
+                    GenderId = table.Column<int>(type: "INTEGER", nullable: false),
+                    ImagePath = table.Column<string>(type: "TEXT", nullable: false),
+                    Points = table.Column<double>(type: "REAL", nullable: false),
+                    IsAdmin = table.Column<bool>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Users", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Users_Categories_CategoryId",
-                        column: x => x.CategoryId,
-                        principalTable: "Categories",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_Users_Genders_GenderId",
                         column: x => x.GenderId,
@@ -73,12 +66,12 @@ namespace StreakyAPi.Migrations
                 name: "FriendRequests",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    RequesterId = table.Column<int>(type: "int", nullable: false),
-                    ReceiverId = table.Column<int>(type: "int", nullable: false),
-                    IsAccepted = table.Column<bool>(type: "bit", nullable: false),
-                    RequestDate = table.Column<DateTime>(type: "datetime2", nullable: false)
+                    Id = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    RequesterId = table.Column<int>(type: "INTEGER", nullable: false),
+                    ReceiverId = table.Column<int>(type: "INTEGER", nullable: false),
+                    IsAccepted = table.Column<bool>(type: "INTEGER", nullable: false),
+                    RequestDate = table.Column<DateTime>(type: "TEXT", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -98,11 +91,35 @@ namespace StreakyAPi.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "UserCategories",
+                columns: table => new
+                {
+                    CategoryId = table.Column<int>(type: "INTEGER", nullable: false),
+                    UserId = table.Column<int>(type: "INTEGER", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_UserCategories", x => new { x.CategoryId, x.UserId });
+                    table.ForeignKey(
+                        name: "FK_UserCategories_Categories_CategoryId",
+                        column: x => x.CategoryId,
+                        principalTable: "Categories",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_UserCategories_Users_UserId",
+                        column: x => x.UserId,
+                        principalTable: "Users",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "UserFriend",
                 columns: table => new
                 {
-                    FriendId = table.Column<int>(type: "int", nullable: false),
-                    UserId = table.Column<int>(type: "int", nullable: false)
+                    FriendId = table.Column<int>(type: "INTEGER", nullable: false),
+                    UserId = table.Column<int>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -132,14 +149,14 @@ namespace StreakyAPi.Migrations
                 column: "RequesterId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_UserFriend_UserId",
-                table: "UserFriend",
+                name: "IX_UserCategories_UserId",
+                table: "UserCategories",
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Users_CategoryId",
-                table: "Users",
-                column: "CategoryId");
+                name: "IX_UserFriend_UserId",
+                table: "UserFriend",
+                column: "UserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Users_GenderId",
@@ -154,13 +171,16 @@ namespace StreakyAPi.Migrations
                 name: "FriendRequests");
 
             migrationBuilder.DropTable(
+                name: "UserCategories");
+
+            migrationBuilder.DropTable(
                 name: "UserFriend");
 
             migrationBuilder.DropTable(
-                name: "Users");
+                name: "Categories");
 
             migrationBuilder.DropTable(
-                name: "Categories");
+                name: "Users");
 
             migrationBuilder.DropTable(
                 name: "Genders");
