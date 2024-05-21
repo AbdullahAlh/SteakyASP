@@ -33,20 +33,20 @@ builder.Services.AddDbContext<StreakyContext>(options =>
     options.LogTo(Console.WriteLine, LogLevel.Information);
 });
 
-if (builder.Environment.IsDevelopment())
-{
-    builder.Services.AddEndpointsApiExplorer();
-    builder.Services.AddSwaggerGen();
-}
+//if (builder.Environment.IsDevelopment())
+//{
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
+//}
 
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
-if (builder.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
+//if (builder.Environment.IsDevelopment())
+//{
+app.UseSwagger();
+app.UseSwaggerUI();
+//}
 app.UseAuthentication();
 app.UseAuthorization();
 
